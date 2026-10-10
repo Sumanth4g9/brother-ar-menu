@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Crave Nation · Avocado AR</title>
+<style>
+:root{--purple:#32105b;--gold:#e7bf70;--cream:#fffaf1}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#160d20;color:#fff}
+header{padding:18px 20px 12px;text-align:center;background:linear-gradient(135deg,#32105b,#170d24);border-bottom:1px solid #5b3c73}
+.brand{font-weight:800;letter-spacing:.12em;color:var(--gold);font-size:14px}.sub{font-size:12px;color:#d9cfe2;margin-top:5px}
+main{max-width:680px;margin:auto;padding:18px}
+.panel{background:#251832;border:1px solid #49345a;border-radius:18px;padding:16px;margin-bottom:14px}
+h1{font-size:23px;margin:0 0 7px}p{color:#d9cfe2;line-height:1.45;font-size:14px;margin:0 0 13px}
+label{font-size:13px;color:#eee0f7;display:block;margin-bottom:8px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{font:inherit;border:0;border-radius:12px;padding:12px 10px;font-weight:700;cursor:pointer}
+.mode{background:#39284a;color:#fff;border:1px solid #604775}.mode.active{background:var(--gold);color:#261238;border-color:var(--gold)}
+.primary{width:100%;background:var(--gold);color:#261238;font-size:16px;margin-top:12px}
+.secondary{background:#39284a;color:white;border:1px solid #604775}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+#status{font-size:13px;color:#f4dca8;margin-top:12px;min-height:20px}
+.note{font-size:12px;color:#bfb0ca;margin-top:12px}
+#preview{width:100%;height:220px;background:radial-gradient(ellipse,#49345a,#1b1024);border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#d9cfe2}
+#preview canvas{width:100%;height:100%;display:block}
+footer{text-align:center;padding:10px 18px 28px;color:#9f8eaf;font-size:12px}
+</style>
+</head>
+<body>
+<header><div class="brand">CRAVE NATION</div><div class="sub">A simple spatial AR experiment</div></header>
+<main>
+  <section class="panel">
+    <h1>Place the avocado in your space</h1>
+    <p>Try floating placement or place the model on a detected surface. This is a prototype using the existing avocado sample.</p>
+    <div id="preview">Loading 3D avocado preview…</div>
+    <div id="status" role="status">Loading 3D model…</div>
+  </section>
+  <section class="panel">
+    <label>Choose placement mode</label>
+    <div class="modes">
+      <button class="mode active" id="floatMode">Floating AR</button>
+      <button class="mode" id="surfaceMode">Surface AR</button>
+    </div>
+    <button class="primary" id="launch">Launch AR camera</button>
+    <div class="controls">
+      <button class="secondary" id="up">Move up ↑</button>
+      <button class="secondary" id="down">Move down ↓</button>
+      <button class="secondary" id="reset">Reset position</button>
+    </div>
+    <div class="note">In Floating AR, tap the camera view to place the avocado in front of you, then use Move up/down. In Surface AR, scan a table or floor and tap to place it. Availability depends on your Android phone and Chrome/WebXR support.</div>
+  </section>
+</main>
+<footer>Crave Nation · AR prototype · No ordering or payment features</footer>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
+
+const MODEL_URL='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb';
+const preview=document.querySelector('#preview'), statusEl=document.querySelector('#status');
+const floatBtn=document.querySelector('#floatMode'), surfaceBtn=document.querySelector('#surfaceMode');
+let mode='float', renderer, scene, camera, model, xrSession, hitTestSource, reticle, placed=false, startY=0, previewRenderer, previewScene, previewCamera;
+function status(t){statusEl.textContent=t}
+function setupPreview(){
+  previewScene=new THREE.Scene(); previewScene.background=new THREE.Color('#30203e');
+  previewCamera=new THREE.PerspectiveCamera(35,preview.clientWidth/220,.1,20); previewCamera.position.set(0,0.1,2.8);
+  previewRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false}); previewRenderer.setPixelRatio(Math.min(devicePixelRatio,2)); previewRenderer.setSize(preview.clientWidth,220); previewRenderer.outputColorSpace=THREE.SRGBColorSpace;
+  preview.replaceChildren(previewRenderer.domElement);
+  previewScene.add(new THREE.HemisphereLight(0xffffff,0x6c5478,2));
+  const light=new THREE.DirectionalLight(0xffffff,2.2); light.position.set(2,3,4); previewScene.add(light);
+  new GLTFLoader().load(MODEL_URL,g=>{
+    model=g.scene; model.scale.setScalar(1.15); model.rotation.y=-.35; previewScene.add(model);
+    status('3D avocado loaded. Choose a mode and launch AR.');
+    const tick=()=>{requestAnimationFrame(tick); if(model)model.rotation.y+=.003;previewRenderer.render(previewScene,previewCamera)};tick();
+  },undefined,e=>{status('Could not load the model. Check internet connection.');console.error(e)});
+}
+function setMode(m){mode=m;floatBtn.classList.toggle('active',m==='float');surfaceBtn.classList.toggle('active',m==='surface');status(m==='float'?'Floating AR selected.':'Surface AR selected.')}
+floatBtn.onclick=()=>setMode('float');surfaceBtn.onclick=()=>setMode('surface');
+function makeARScene(){
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera();
+  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.xr.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.setClearColor(0x000000,0);
+  renderer.domElement.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1000;touch-action:none';
+  document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x887799,2));
+  const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(1,3,2);scene.add(light);
+  reticle=new THREE.Mesh(new THREE.RingGeometry(.08,.11,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xe7bf70}));
+  reticle.matrixAutoUpdate=false;reticle.visible=false;scene.add(reticle);
+  const loader=new GLTFLoader();
+  loader.load(MODEL_URL,g=>{
+    model=g.scene;model.scale.setScalar(.22);model.visible=false;scene.add(model);
+    // Center the model's pivot so positioning feels predictable.
+    const box=new THREE.Box3().setFromObject(model), center=box.getCenter(new THREE.Vector3());
+    model.position.sub(center);
+  },undefined,e=>{status('AR model failed to load.');console.error(e)});
+  renderer.setAnimationLoop((time,frame)=>{
+    if(frame && mode==='surface' && hitTestSource){
+      const ref=renderer.xr.getReferenceSpace();
+      const results=frame.getHitTestResults(hitTestSource);
+      if(results.length){const pose=results[0].getPose(ref);reticle.visible=true;reticle.matrix.fromArray(pose.transform.matrix)}
+      else reticle.visible=false;
+    }
+    renderer.render(scene,camera);
+  });
+  renderer.domElement.addEventListener('select',()=>{
+    if(!model)return;
+    if(mode==='surface' && reticle.visible){model.position.setFromMatrixPosition(reticle.matrix);model.quaternion.setFromRotationMatrix(reticle.matrix);model.position.y+=.12;model.visible=true;placed=true;startY=model.position.y;status('Placed on detected surface. Move around to view it.')}
+    else if(mode==='float'){
+      const cam=renderer.xr.getCamera(camera);
+      const direction=new THREE.Vector3(0,0,-1).applyQuaternion(cam.quaternion);
+      model.position.copy(cam.position).add(direction.multiplyScalar(1.15));
+      model.position.y-=.05;model.quaternion.copy(cam.quaternion);model.rotation.x=0;model.visible=true;placed=true;startY=model.position.y;status('Floating avocado placed. Use the height controls on screen.');
+    }
+  });
+}
+async function launch(){
+  if(!navigator.xr){status('WebXR is not available in this browser. Open this page in Chrome on a supported Android phone over HTTPS.');return}
+  if(!await navigator.xr.isSessionSupported('immersive-ar')){status('This device/browser does not support immersive AR.');return}
+  try{
+    makeARScene();
+    const options=mode==='surface'?{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}}:{optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}};
+    xrSession=await navigator.xr.requestSession('immersive-ar',options);
+    renderer.xr.setReferenceSpaceType('local');
+    await renderer.xr.setSession(xrSession);
+    if(mode==='surface'){
+      const ref=await xrSession.requestReferenceSpace('viewer');
+      hitTestSource=await xrSession.requestHitTestSource({space:ref});
+      status('Scan the floor/table, then tap to place the avocado.');
+    } else status('Floating mode ready. Tap the camera view to place the avocado.');
+    xrSession.addEventListener('end',()=>{
+      hitTestSource?.cancel();hitTestSource=null;renderer.setAnimationLoop(null);renderer.domElement.remove();renderer.dispose();renderer=null;xrSession=null;placed=false;
+      status('AR session ended. Choose a mode to try again.');
+    });
+    // DOM controls remain over the AR camera where the browser permits DOM overlay.
+    document.querySelector('main').style.position='relative';
+    document.querySelector('.panel:nth-child(2)').style.position='fixed';
+    document.querySelector('.panel:nth-child(2)').style.left='10px';
+    document.querySelector('.panel:nth-child(2)').style.right='10px';
+    document.querySelector('.panel:nth-child(2)').style.bottom='10px';
+    document.querySelector('.panel:nth-child(2)').style.zIndex='1001';
+    document.querySelector('.panel:nth-child(2)').style.background='rgba(37,24,50,.9)';
+    document.querySelector('.panel:nth-child(2)').style.padding='10px';
+    document.querySelector('.panel:nth-child(2) p, .panel:nth-child(2) label, .panel:nth-child(2) .modes, .panel:nth-child(2) .primary, .panel:nth-child(2) .note').forEach?.(()=>{});
+  }catch(e){console.error(e);status('Could not start AR: '+(e.message||e));if(renderer){renderer.domElement.remove();renderer.dispose();renderer=null}}
+}
+document.querySelector('#launch').onclick=launch;
+document.querySelector('#up').onclick=()=>{if(model&&placed){model.position.y+=.1;status('Moved up.')}};
+document.querySelector('#down').onclick=()=>{if(model&&placed){model.position.y-=.1;status('Moved down.')}};
+document.querySelector('#reset').onclick=()=>{if(model&&placed){if(mode==='float'){const cam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(cam.quaternion);model.position.copy(cam.position).add(dir.multiplyScalar(1.15));model.position.y-=.05;startY=model.position.y;}else model.position.y=startY;status('Position reset.')}};
+if(!navigator.xr)status('Preview loads here. For camera AR, use supported Android Chrome on the HTTPS website.');
+setupPreview();
+</script>
+</body>
+</html>
