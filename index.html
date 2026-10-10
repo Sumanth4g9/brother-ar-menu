@@ -1,79 +1,185 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My AR Restaurant Menu</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#35105c">
+<title>Crave Nation | Mini AR Menu</title>
 
-  <script type="module"
-    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js">
-  </script>
+<script type="module"
+src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 24px 16px;
-      font-family: Arial, sans-serif;
-      background: #fffaf2;
-      color: #29251f;
-    }
-
-    main {
-      max-width: 520px;
-      margin: auto;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 6px 24px #00000012;
-    }
-
-    model-viewer {
-      width: 100%;
-      height: 320px;
-      background: #f5eddf;
-      border-radius: 14px;
-    }
-
-    .price {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .note {
-      color: #71695f;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-  </style>
+<style>
+:root {
+  --purple: #35105c;
+  --violet: #7540a8;
+  --cream: #fffaf4;
+  --gold: #ffc83d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--cream);
+  color: #27143a;
+}
+header {
+  background: var(--purple);
+  color: white;
+  padding: 30px 18px;
+  text-align: center;
+  border-bottom: 6px solid var(--gold);
+}
+.logo {
+  font-size: clamp(32px, 7vw, 52px);
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+header p { margin-bottom: 0; color: #ffe8a2; }
+main { max-width: 950px; margin: auto; padding: 22px 16px; }
+.intro { text-align: center; margin-bottom: 24px; }
+.intro h2 { margin-bottom: 8px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: white;
+  border: 1px solid #eadff3;
+  border-radius: 18px;
+  padding: 15px;
+  box-shadow: 0 6px 20px #35105c10;
+}
+.category {
+  color: var(--violet);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+.food-photo {
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 10px;
+  background: #f0e6f7;
+}
+.card h3 { margin: 14px 0 6px; }
+.price { font-size: 23px; font-weight: 900; color: var(--purple); }
+.description { color: #75697e; font-size: 13px; }
+model-viewer {
+  display: block;
+  width: 100%;
+  height: 260px;
+  margin-top: 12px;
+  border-radius: 12px;
+  background: #f4edf9;
+}
+.ar-note { font-size: 12px; color: #75697e; line-height: 1.5; }
+footer {
+  background: var(--purple);
+  color: white;
+  text-align: center;
+  padding: 22px 16px;
+  margin-top: 25px;
+  line-height: 1.8;
+}
+</style>
 </head>
 
 <body>
-  <main>
-    <h1>Explore Our Food</h1>
-    <p class="note">Your first interactive restaurant menu.</p>
+<header>
+  <div class="logo">♛ CRAVE NATION</div>
+  <p>MORE BITES. MORE CRAVES. MORE HAPPINESS.</p>
+  <p>MINI INTERACTIVE MENU</p>
+</header>
 
-    <section class="card">
-      <model-viewer
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb"
-        alt="Sample 3D avocado model"
-        ar
-        ar-modes="scene-viewer webxr quick-look"
-        ar-placement="floor"
-        camera-controls
-        auto-rotate
-        shadow-intensity="1">
-      </model-viewer>
+<main>
+  <section class="intro">
+    <h2>Pick Your Craving 🍽️</h2>
+    <p>Explore our favourites and try the 3D experience.</p>
+  </section>
 
-      <h2>Featured Dish</h2>
-      <p class="note">
-        Sample model for testing. We will replace it with
-        your brother's actual food item.
-      </p>
-      <p class="price">Add your dish price</p>
-    </section>
-  </main>
+  <section class="grid">
+
+    <article class="card">
+      <div class="category">01 · VEG SNACKS</div>
+      <img class="food-photo"
+        src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80"
+        alt="Indian crispy snacks"
+        loading="lazy">
+      <h3>Veg Spring Rolls</h3>
+      <div class="description">6 pieces · Vegetarian</div>
+      <div class="price">₹129</div>
+    </article>
+
+    <article class="card">
+      <div class="category">02 · FRENCH FRIES</div>
+      <img class="food-photo"
+        src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=700&q=80"
+        alt="Golden French fries"
+        loading="lazy">
+      <h3>Salted Fries</h3>
+      <div class="description">Regular serving</div>
+      <div class="price">₹59</div>
+    </article>
+
+    <article class="card">
+      <div class="category">03 · NON-VEG SNACKS</div>
+      <img class="food-photo"
+        src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=700&q=80"
+        alt="Chicken wings"
+        loading="lazy">
+      <h3>Chicken Wings</h3>
+      <div class="description">6 pieces · Non-vegetarian</div>
+      <div class="price">₹199</div>
+    </article>
+
+    <article class="card">
+      <div class="category">04 · MOJITOS</div>
+      <img class="food-photo"
+        src="https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=700&q=80"
+        alt="Refreshing lime drink"
+        loading="lazy"
+        onerror="this.onerror=null;this.style.display='none';this.insertAdjacentHTML('afterend','<div style=&quot;height:155px;border-radius:12px;background:linear-gradient(135deg,#d9f99d,#65a30d);display:flex;align-items:center;justify-content:center;font-size:64px&quot;>🍋🌿</div>')">
+      <h3>Mint Lime Mojito</h3>
+      <div class="description">Mint · Lime · Refreshing</div>
+      <div class="price">₹69</div>
+    </article>
+
+  </section>
+
+  <section class="card" style="margin-top:24px">
+    <div class="category">AR DEMO · TEMPORARY MODEL</div>
+    <h2>Try Our 3D Experience</h2>
+    <p class="description">
+      This is a temporary sample model. It is not a Crave Nation dish.
+    </p>
+
+    <model-viewer
+      src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb"
+      alt="Temporary sample avocado model"
+      ar
+      ar-modes="scene-viewer webxr quick-look"
+      ar-placement="floor"
+      camera-controls
+      auto-rotate
+      shadow-intensity="1">
+    </model-viewer>
+
+    <p class="ar-note">
+      Tap the AR icon in the viewer on a compatible phone to test placement.
+      Actual food models will be added next.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <strong>CRAVE NATION</strong><br>
+  Uppal, Hyderabad · Near Olive Outdoor<br>
+  Contact: +91 7386169076
+</footer>
 </body>
 </html>
+
