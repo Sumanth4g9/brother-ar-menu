@@ -31,7 +31,7 @@ body.ar-active{overflow:hidden}body.ar-active #arControls{position:fixed;z-index
 import * as THREE from 'three';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 const MODEL_URL='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb';
-const $=id=>document.getElementById(id);let mode='float',previewRenderer,previewScene,previewCamera,previewModel,renderer,scene,camera,arModel,reticle,session,hitSource,placed=false,lastY=0;
+const $=id=>document.getElementById(id);let mode='float',previewRenderer,previewScene,previewCamera,previewModel,renderer,scene,camera,arModel,reticle,session,hitSource,placed=false,lastY=0,arModelReady=false;
 function setStatus(text,kind=''){ $('status').textContent=text;$('status').className='status '+kind; }
 function fitModel(root,targetSize){root.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(root);if(box.isEmpty())return;const size=box.getSize(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z);if(!Number.isFinite(max)||max<=0)return;root.scale.multiplyScalar(targetSize/max);root.updateMatrixWorld(true);const b2=new THREE.Box3().setFromObject(root);const center=b2.getCenter(new THREE.Vector3());root.position.sub(center);root.updateMatrixWorld(true);}
 function loadModel(onLoaded,onError){new GLTFLoader().load(MODEL_URL,g=>{const root=g.scene;fitModel(root,1.45);onLoaded(root)},undefined,onError)}
@@ -56,16 +56,38 @@ async function launchAR(){
  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera();renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.xr.enabled=true;renderer.setClearColor(0x000000,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.domElement.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1000;touch-action:none';document.body.appendChild(renderer.domElement);
  scene.add(new THREE.HemisphereLight(0xffffff,0x8c7c9c,2));const dl=new THREE.DirectionalLight(0xffffff,2.2);dl.position.set(1,3,2);scene.add(dl);
  reticle=new THREE.Mesh(new THREE.RingGeometry(.07,.095,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xf2c65d}));reticle.matrixAutoUpdate=false;reticle.visible=false;scene.add(reticle);
- loadModel(root=>{arModel=root;root.scale.multiplyScalar(.22/1.45);root.visible=false;scene.add(root)},e=>{console.error(e);setStatus('Could not load avocado model in AR.','error')});
+ arModelReady=false;arModel=null;
+  loadModel(root=>{arModel=root;root.scale.multiplyScalar(.22/1.45);root.visible=false;scene.add(root);arModelReady=true;setStatus('Avocado ready. Tap the camera view to place it.','ok')},e=>{console.error('AR MODEL LOAD ERROR',e);setStatus('Could not load avocado model in AR. Check internet/model URL.','error')});
  const opts=mode==='surface'?{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}}:{optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}};
  session=await navigator.xr.requestSession('immersive-ar',opts);renderer.xr.setReferenceSpaceType('local');await renderer.xr.setSession(session);document.body.classList.add('ar-active');
  if(mode==='surface'){const ref=await session.requestReferenceSpace('viewer');hitSource=await session.requestHitTestSource({space:ref});setStatus('Scan a table or floor, then tap to place.')}else setStatus('Tap the camera view to place the floating avocado.');
  renderer.setAnimationLoop((t,frame)=>{if(frame&&mode==='surface'&&hitSource){const results=frame.getHitTestResults(hitSource);if(results.length){const pose=results[0].getPose(renderer.xr.getReferenceSpace());reticle.visible=true;reticle.matrix.fromArray(pose.transform.matrix)}else reticle.visible=false;}renderer.render(scene,camera)});
- renderer.domElement.addEventListener('click',()=>{if(!arModel)return;if(mode==='surface'){if(!reticle.visible)return;arModel.position.setFromMatrixPosition(reticle.matrix);arModel.quaternion.setFromRotationMatrix(reticle.matrix);arModel.position.y+=.11;}else{const xrCam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(xrCam.quaternion);arModel.position.copy(xrCam.position).add(dir.multiplyScalar(1.15));arModel.position.y-=.05;arModel.quaternion.copy(xrCam.quaternion);arModel.rotation.x=0;}arModel.visible=true;placed=true;lastY=arModel.position.y;setStatus(mode==='float'?'Floating avocado placed.':'Avocado placed on the surface.','ok')});
- session.addEventListener('end',cleanup);setStatus('AR camera started.','ok');
+ session.addEventListener('select',()=>{
+    if(!arModelReady||!arModel){setStatus('AR camera is open; avocado is still loading. Please wait a moment.');return;}
+    if(mode==='surface'){
+      if(!reticle.visible){setStatus('Point at a table or floor until the gold ring appears.');return;}
+      arModel.position.setFromMatrixPosition(reticle.matrix);
+      arModel.quaternion.setFromRotationMatrix(reticle.matrix);
+      arModel.position.y+=.11;
+    }else{
+      const xrCam=renderer.xr.getCamera(camera);
+      const worldPos=new THREE.Vector3();
+      const worldQuat=new THREE.Quaternion();
+      xrCam.getWorldPosition(worldPos);
+      xrCam.getWorldQuaternion(worldQuat);
+      const dir=new THREE.Vector3(0,0,-1).applyQuaternion(worldQuat);
+      arModel.position.copy(worldPos).add(dir.multiplyScalar(1.15));
+      arModel.position.y-=.05;
+      arModel.quaternion.copy(worldQuat);
+      arModel.rotation.x=0;
+    }
+    arModel.visible=true;placed=true;lastY=arModel.position.y;
+    setStatus(mode==='float'?'Floating avocado placed.':'Avocado placed on the surface.','ok');
+  });
+  session.addEventListener('end',cleanup);setStatus('AR camera started. Loading avocado model…');
  }catch(e){console.error(e);setStatus('AR could not start: '+(e.message||e),'error');cleanup();}
 }
-function cleanup(){hitSource?.cancel();hitSource=null;document.body.classList.remove('ar-active');if(renderer){renderer.setAnimationLoop(null);renderer.domElement.remove();renderer.dispose();renderer=null;}session=null;placed=false;setStatus('AR ended. You can try again.');}
+function cleanup(){hitSource?.cancel();hitSource=null;document.body.classList.remove('ar-active');if(renderer){renderer.setAnimationLoop(null);renderer.domElement.remove();renderer.dispose();renderer=null;}session=null;placed=false;arModelReady=false;arModel=null;setStatus('AR ended. You can try again.');}
 $('launch').onclick=launchAR;$('up').onclick=()=>{if(arModel&&placed){arModel.position.y+=.1;lastY=arModel.position.y;setStatus('Moved higher.','ok')}};$('down').onclick=()=>{if(arModel&&placed){arModel.position.y-=.1;lastY=arModel.position.y;setStatus('Moved lower.','ok')}};$('reset').onclick=()=>{if(arModel&&placed){if(mode==='float'){const xrCam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(xrCam.quaternion);arModel.position.copy(xrCam.position).add(dir.multiplyScalar(1.15));arModel.position.y-=.05;}else arModel.position.y=lastY;setStatus('Placement reset.','ok')}};
 setupPreview();
 </script>
