@@ -1,158 +1,72 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Crave Nation · Avocado AR</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Crave Nation | Avocado AR Lab</title>
 <style>
-:root{--purple:#32105b;--gold:#e7bf70;--cream:#fffaf1}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#160d20;color:#fff}
-header{padding:18px 20px 12px;text-align:center;background:linear-gradient(135deg,#32105b,#170d24);border-bottom:1px solid #5b3c73}
-.brand{font-weight:800;letter-spacing:.12em;color:var(--gold);font-size:14px}.sub{font-size:12px;color:#d9cfe2;margin-top:5px}
-main{max-width:680px;margin:auto;padding:18px}
-.panel{background:#251832;border:1px solid #49345a;border-radius:18px;padding:16px;margin-bottom:14px}
-h1{font-size:23px;margin:0 0 7px}p{color:#d9cfe2;line-height:1.45;font-size:14px;margin:0 0 13px}
-label{font-size:13px;color:#eee0f7;display:block;margin-bottom:8px}
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-button{font:inherit;border:0;border-radius:12px;padding:12px 10px;font-weight:700;cursor:pointer}
-.mode{background:#39284a;color:#fff;border:1px solid #604775}.mode.active{background:var(--gold);color:#261238;border-color:var(--gold)}
-.primary{width:100%;background:var(--gold);color:#261238;font-size:16px;margin-top:12px}
-.secondary{background:#39284a;color:white;border:1px solid #604775}
-.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-#status{font-size:13px;color:#f4dca8;margin-top:12px;min-height:20px}
-.note{font-size:12px;color:#bfb0ca;margin-top:12px}
-#preview{width:100%;height:220px;background:radial-gradient(ellipse,#49345a,#1b1024);border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#d9cfe2}
-#preview canvas{width:100%;height:100%;display:block}
-footer{text-align:center;padding:10px 18px 28px;color:#9f8eaf;font-size:12px}
+:root{--ink:#1c1030;--purple:#35145b;--gold:#f2c65d;--cream:#fffaf2;--muted:#685d73}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--ink);color:white;padding:15px 20px;border-bottom:3px solid var(--gold)}
+.head{max-width:1040px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:850;letter-spacing:.12em}.tag{font-size:12px;color:#d9c9ec}
+main{max-width:1040px;margin:24px auto;padding:0 16px}.intro{margin-bottom:18px}.eyebrow{color:#7952a1;font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:8px 0}p{line-height:1.5;color:var(--muted);margin:8px 0 0}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.8fr);gap:16px;align-items:stretch}.card{background:white;border:1px solid #e9e0ef;border-radius:20px;box-shadow:0 8px 26px #28123b0c;padding:18px;min-width:0}.card h2{font-size:18px;margin:0}.preview-wrap{height:390px;margin-top:14px;background:radial-gradient(ellipse at center,#f8f0ff 0%,#efe3f8 70%,#e9def0 100%);border-radius:15px;overflow:hidden;position:relative}.preview-wrap canvas{display:block;width:100%;height:100%}.loading{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#68517a;padding:20px;pointer-events:none}.status{font-size:13px;margin-top:12px;color:#5d4b6e;min-height:20px}.controls{display:flex;flex-direction:column;gap:12px}.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}button{font:inherit;font-weight:750;border-radius:12px;border:1px solid #d9c9e7;padding:13px 12px;cursor:pointer;min-height:46px}.mode{background:#f7f1fb;color:var(--ink)}.mode.active{background:var(--ink);border-color:var(--ink);color:white}.primary{background:var(--gold);border-color:var(--gold);color:#26153c;width:100%;font-size:15px}.secondary{background:white;color:var(--ink);width:100%}.move-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.move-grid .wide{grid-column:1/-1}.hint{background:#f8f3fc;border-radius:12px;padding:12px;font-size:12px;line-height:1.5;color:#5c4a6b}.status.error{color:#a52828}.status.ok{color:#24633d}.tiny{font-size:12px;color:#81738c;margin-top:10px}footer{text-align:center;color:#8b7e96;font-size:12px;padding:22px}
+body.ar-active{overflow:hidden}body.ar-active #arControls{position:fixed;z-index:1002;left:12px;right:12px;bottom:12px;max-width:520px;margin:auto;background:#fffdf8;box-shadow:0 8px 35px #0006;border-radius:18px;padding:12px}body.ar-active #arControls .hint{display:none}body.ar-active #previewCard{display:none}body.ar-active header,body.ar-active .intro,body.ar-active footer{display:none}body.ar-active main{margin:0;padding:0}body.ar-active .layout{display:block}body.ar-active #arControls h2{font-size:15px;margin-bottom:6px}body.ar-active #arControls .mode-grid{margin-top:6px}body.ar-active #arControls button{min-height:40px;padding:8px}
+@media(max-width:760px){main{margin:18px auto}.layout{grid-template-columns:1fr}.preview-wrap{height:340px}.card{padding:15px}.head{align-items:flex-start;flex-direction:column;gap:3px}body.ar-active #arControls{left:8px;right:8px;bottom:8px}}
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
 </head>
 <body>
-<header><div class="brand">CRAVE NATION</div><div class="sub">A simple spatial AR experiment</div></header>
+<header><div class="head"><div class="brand">♛ CRAVE NATION</div><div class="tag">AR LAB · ONE MODEL · TWO PLACEMENT MODES</div></div></header>
 <main>
-  <section class="panel">
-    <h1>Place the avocado in your space</h1>
-    <p>Try floating placement or place the model on a detected surface. This is a prototype using the existing avocado sample.</p>
-    <div id="preview">Loading 3D avocado preview…</div>
-    <div id="status" role="status">Loading 3D model…</div>
-  </section>
-  <section class="panel">
-    <label>Choose placement mode</label>
-    <div class="modes">
-      <button class="mode active" id="floatMode">Floating AR</button>
-      <button class="mode" id="surfaceMode">Surface AR</button>
-    </div>
-    <button class="primary" id="launch">Launch AR camera</button>
-    <div class="controls">
-      <button class="secondary" id="up">Move up ↑</button>
-      <button class="secondary" id="down">Move down ↓</button>
-      <button class="secondary" id="reset">Reset position</button>
-    </div>
-    <div class="note">In Floating AR, tap the camera view to place the avocado in front of you, then use Move up/down. In Surface AR, scan a table or floor and tap to place it. Availability depends on your Android phone and Chrome/WebXR support.</div>
-  </section>
-</main>
-<footer>Crave Nation · AR prototype · No ordering or payment features</footer>
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
-</script>
+<section class="intro"><div class="eyebrow">Working prototype</div><h1>See the avocado in your space.</h1><p>First confirm the 3D model looks right. Then try floating placement or anchor it to a detected surface.</p></section>
+<div class="layout">
+<section class="card" id="previewCard"><h2>3D preview</h2><p>Drag to rotate. Scroll or pinch to zoom.</p><div class="preview-wrap" id="preview"><div class="loading" id="loading">Loading the avocado model…</div></div><div class="status" id="status" role="status">Loading model…</div></section>
+<section class="card controls" id="arControls"><div><div class="eyebrow">Placement</div><h2>Choose how to place it</h2><div class="mode-grid"><button class="mode active" id="floatMode">Floating</button><button class="mode" id="surfaceMode">On a surface</button></div></div>
+<button class="primary" id="launch">Launch AR camera</button>
+<div class="move-grid"><button class="secondary" id="up">Move higher ↑</button><button class="secondary" id="down">Move lower ↓</button><button class="secondary wide" id="reset">Reset placement</button></div>
+<div class="hint" id="hint">Floating: tap the camera view to place the avocado in front of you. Use Move higher/lower to adjust its height. On a surface: scan a table or floor, then tap to place it. Requires a compatible Android phone and WebXR support.</div>
+<div class="tiny">Sample 3D model · No menu or ordering changes</div></section>
+</div></main><footer>Crave Nation · AR experiment</footer>
 <script type="module">
 import * as THREE from 'three';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
-
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 const MODEL_URL='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb';
-const preview=document.querySelector('#preview'), statusEl=document.querySelector('#status');
-const floatBtn=document.querySelector('#floatMode'), surfaceBtn=document.querySelector('#surfaceMode');
-let mode='float', renderer, scene, camera, model, xrSession, hitTestSource, reticle, placed=false, startY=0, previewRenderer, previewScene, previewCamera;
-function status(t){statusEl.textContent=t}
+const $=id=>document.getElementById(id);let mode='float',previewRenderer,previewScene,previewCamera,previewModel,renderer,scene,camera,arModel,reticle,session,hitSource,placed=false,lastY=0;
+function setStatus(text,kind=''){ $('status').textContent=text;$('status').className='status '+kind; }
+function fitModel(root,targetSize){root.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(root);if(box.isEmpty())return;const size=box.getSize(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z);if(!Number.isFinite(max)||max<=0)return;root.scale.multiplyScalar(targetSize/max);root.updateMatrixWorld(true);const b2=new THREE.Box3().setFromObject(root);const center=b2.getCenter(new THREE.Vector3());root.position.sub(center);root.updateMatrixWorld(true);}
+function loadModel(onLoaded,onError){new GLTFLoader().load(MODEL_URL,g=>{const root=g.scene;fitModel(root,1.45);onLoaded(root)},undefined,onError)}
 function setupPreview(){
-  previewScene=new THREE.Scene(); previewScene.background=new THREE.Color('#30203e');
-  previewCamera=new THREE.PerspectiveCamera(35,preview.clientWidth/220,.1,20); previewCamera.position.set(0,0.1,2.8);
-  previewRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false}); previewRenderer.setPixelRatio(Math.min(devicePixelRatio,2)); previewRenderer.setSize(preview.clientWidth,220); previewRenderer.outputColorSpace=THREE.SRGBColorSpace;
-  preview.replaceChildren(previewRenderer.domElement);
-  previewScene.add(new THREE.HemisphereLight(0xffffff,0x6c5478,2));
-  const light=new THREE.DirectionalLight(0xffffff,2.2); light.position.set(2,3,4); previewScene.add(light);
-  new GLTFLoader().load(MODEL_URL,g=>{
-    model=g.scene; model.scale.setScalar(1.15); model.rotation.y=-.35; previewScene.add(model);
-    status('3D avocado loaded. Choose a mode and launch AR.');
-    const tick=()=>{requestAnimationFrame(tick); if(model)model.rotation.y+=.003;previewRenderer.render(previewScene,previewCamera)};tick();
-  },undefined,e=>{status('Could not load the model. Check internet connection.');console.error(e)});
+ previewScene=new THREE.Scene();previewScene.background=new THREE.Color('#f2e8f8');
+ previewCamera=new THREE.PerspectiveCamera(35,1,.01,100);previewCamera.position.set(0,.12,3.4);previewCamera.lookAt(0,0,0);
+ previewRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false});previewRenderer.setPixelRatio(Math.min(devicePixelRatio,2));previewRenderer.outputColorSpace=THREE.SRGBColorSpace;previewRenderer.setSize($('preview').clientWidth,$('preview').clientHeight);$('preview').prepend(previewRenderer.domElement);
+ previewScene.add(new THREE.HemisphereLight(0xffffff,0x9b83a9,2.2));const light=new THREE.DirectionalLight(0xffffff,2.8);light.position.set(2,4,4);previewScene.add(light);
+ loadModel(root=>{previewModel=root;previewScene.add(root);$('loading').style.display='none';setStatus('Avocado loaded and fitted to the preview.','ok');},e=>{console.error(e);$('loading').textContent='Could not load the model. Check your internet connection.';setStatus('Model download failed.','error')});
+ let drag=false,px=0,py=0;const canvas=previewRenderer.domElement;
+ canvas.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
+ canvas.addEventListener('pointermove',e=>{if(!drag||!previewModel)return;previewModel.rotation.y+=(e.clientX-px)*.012;previewModel.rotation.x+=(e.clientY-py)*.008;px=e.clientX;py=e.clientY});
+ canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('wheel',e=>{previewCamera.position.z=Math.max(1.8,Math.min(5,previewCamera.position.z+e.deltaY*.003));},{passive:true});
+ function resize(){const w=$('preview').clientWidth,h=$('preview').clientHeight;previewRenderer.setSize(w,h);previewCamera.aspect=w/h;previewCamera.updateProjectionMatrix()}new ResizeObserver(resize).observe($('preview'));
+ function tick(){requestAnimationFrame(tick);if(previewModel&&!drag)previewModel.rotation.y+=.003;previewRenderer.render(previewScene,previewCamera)}tick();
 }
-function setMode(m){mode=m;floatBtn.classList.toggle('active',m==='float');surfaceBtn.classList.toggle('active',m==='surface');status(m==='float'?'Floating AR selected.':'Surface AR selected.')}
-floatBtn.onclick=()=>setMode('float');surfaceBtn.onclick=()=>setMode('surface');
-function makeARScene(){
-  scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera();
-  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.xr.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;
-  renderer.setClearColor(0x000000,0);
-  renderer.domElement.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1000;touch-action:none';
-  document.body.appendChild(renderer.domElement);
-  scene.add(new THREE.HemisphereLight(0xffffff,0x887799,2));
-  const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(1,3,2);scene.add(light);
-  reticle=new THREE.Mesh(new THREE.RingGeometry(.08,.11,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xe7bf70}));
-  reticle.matrixAutoUpdate=false;reticle.visible=false;scene.add(reticle);
-  const loader=new GLTFLoader();
-  loader.load(MODEL_URL,g=>{
-    model=g.scene;model.scale.setScalar(.22);model.visible=false;scene.add(model);
-    // Center the model's pivot so positioning feels predictable.
-    const box=new THREE.Box3().setFromObject(model), center=box.getCenter(new THREE.Vector3());
-    model.position.sub(center);
-  },undefined,e=>{status('AR model failed to load.');console.error(e)});
-  renderer.setAnimationLoop((time,frame)=>{
-    if(frame && mode==='surface' && hitTestSource){
-      const ref=renderer.xr.getReferenceSpace();
-      const results=frame.getHitTestResults(hitTestSource);
-      if(results.length){const pose=results[0].getPose(ref);reticle.visible=true;reticle.matrix.fromArray(pose.transform.matrix)}
-      else reticle.visible=false;
-    }
-    renderer.render(scene,camera);
-  });
-  renderer.domElement.addEventListener('select',()=>{
-    if(!model)return;
-    if(mode==='surface' && reticle.visible){model.position.setFromMatrixPosition(reticle.matrix);model.quaternion.setFromRotationMatrix(reticle.matrix);model.position.y+=.12;model.visible=true;placed=true;startY=model.position.y;status('Placed on detected surface. Move around to view it.')}
-    else if(mode==='float'){
-      const cam=renderer.xr.getCamera(camera);
-      const direction=new THREE.Vector3(0,0,-1).applyQuaternion(cam.quaternion);
-      model.position.copy(cam.position).add(direction.multiplyScalar(1.15));
-      model.position.y-=.05;model.quaternion.copy(cam.quaternion);model.rotation.x=0;model.visible=true;placed=true;startY=model.position.y;status('Floating avocado placed. Use the height controls on screen.');
-    }
-  });
+function setMode(m){mode=m;$('floatMode').classList.toggle('active',m==='float');$('surfaceMode').classList.toggle('active',m==='surface');setStatus(m==='float'?'Floating mode selected.':'Surface placement selected.');}
+$('floatMode').onclick=()=>setMode('float');$('surfaceMode').onclick=()=>setMode('surface');
+async function launchAR(){
+ if(!navigator.xr){setStatus('WebXR is unavailable here. Use Chrome on a compatible Android phone via HTTPS.','error');return}
+ try{if(!await navigator.xr.isSessionSupported('immersive-ar')){setStatus('This browser/device does not support immersive AR.','error');return}
+ scene=new THREE.Scene();camera=new THREE.PerspectiveCamera();renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.xr.enabled=true;renderer.setClearColor(0x000000,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.domElement.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:1000;touch-action:none';document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x8c7c9c,2));const dl=new THREE.DirectionalLight(0xffffff,2.2);dl.position.set(1,3,2);scene.add(dl);
+ reticle=new THREE.Mesh(new THREE.RingGeometry(.07,.095,32).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xf2c65d}));reticle.matrixAutoUpdate=false;reticle.visible=false;scene.add(reticle);
+ loadModel(root=>{arModel=root;root.scale.multiplyScalar(.22/1.45);root.visible=false;scene.add(root)},e=>{console.error(e);setStatus('Could not load avocado model in AR.','error')});
+ const opts=mode==='surface'?{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}}:{optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}};
+ session=await navigator.xr.requestSession('immersive-ar',opts);renderer.xr.setReferenceSpaceType('local');await renderer.xr.setSession(session);document.body.classList.add('ar-active');
+ if(mode==='surface'){const ref=await session.requestReferenceSpace('viewer');hitSource=await session.requestHitTestSource({space:ref});setStatus('Scan a table or floor, then tap to place.')}else setStatus('Tap the camera view to place the floating avocado.');
+ renderer.setAnimationLoop((t,frame)=>{if(frame&&mode==='surface'&&hitSource){const results=frame.getHitTestResults(hitSource);if(results.length){const pose=results[0].getPose(renderer.xr.getReferenceSpace());reticle.visible=true;reticle.matrix.fromArray(pose.transform.matrix)}else reticle.visible=false;}renderer.render(scene,camera)});
+ renderer.domElement.addEventListener('click',()=>{if(!arModel)return;if(mode==='surface'){if(!reticle.visible)return;arModel.position.setFromMatrixPosition(reticle.matrix);arModel.quaternion.setFromRotationMatrix(reticle.matrix);arModel.position.y+=.11;}else{const xrCam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(xrCam.quaternion);arModel.position.copy(xrCam.position).add(dir.multiplyScalar(1.15));arModel.position.y-=.05;arModel.quaternion.copy(xrCam.quaternion);arModel.rotation.x=0;}arModel.visible=true;placed=true;lastY=arModel.position.y;setStatus(mode==='float'?'Floating avocado placed.':'Avocado placed on the surface.','ok')});
+ session.addEventListener('end',cleanup);setStatus('AR camera started.','ok');
+ }catch(e){console.error(e);setStatus('AR could not start: '+(e.message||e),'error');cleanup();}
 }
-async function launch(){
-  if(!navigator.xr){status('WebXR is not available in this browser. Open this page in Chrome on a supported Android phone over HTTPS.');return}
-  if(!await navigator.xr.isSessionSupported('immersive-ar')){status('This device/browser does not support immersive AR.');return}
-  try{
-    makeARScene();
-    const options=mode==='surface'?{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}}:{optionalFeatures:['dom-overlay'],domOverlay:{root:document.body}};
-    xrSession=await navigator.xr.requestSession('immersive-ar',options);
-    renderer.xr.setReferenceSpaceType('local');
-    await renderer.xr.setSession(xrSession);
-    if(mode==='surface'){
-      const ref=await xrSession.requestReferenceSpace('viewer');
-      hitTestSource=await xrSession.requestHitTestSource({space:ref});
-      status('Scan the floor/table, then tap to place the avocado.');
-    } else status('Floating mode ready. Tap the camera view to place the avocado.');
-    xrSession.addEventListener('end',()=>{
-      hitTestSource?.cancel();hitTestSource=null;renderer.setAnimationLoop(null);renderer.domElement.remove();renderer.dispose();renderer=null;xrSession=null;placed=false;
-      status('AR session ended. Choose a mode to try again.');
-    });
-    // DOM controls remain over the AR camera where the browser permits DOM overlay.
-    document.querySelector('main').style.position='relative';
-    document.querySelector('.panel:nth-child(2)').style.position='fixed';
-    document.querySelector('.panel:nth-child(2)').style.left='10px';
-    document.querySelector('.panel:nth-child(2)').style.right='10px';
-    document.querySelector('.panel:nth-child(2)').style.bottom='10px';
-    document.querySelector('.panel:nth-child(2)').style.zIndex='1001';
-    document.querySelector('.panel:nth-child(2)').style.background='rgba(37,24,50,.9)';
-    document.querySelector('.panel:nth-child(2)').style.padding='10px';
-    document.querySelector('.panel:nth-child(2) p, .panel:nth-child(2) label, .panel:nth-child(2) .modes, .panel:nth-child(2) .primary, .panel:nth-child(2) .note').forEach?.(()=>{});
-  }catch(e){console.error(e);status('Could not start AR: '+(e.message||e));if(renderer){renderer.domElement.remove();renderer.dispose();renderer=null}}
-}
-document.querySelector('#launch').onclick=launch;
-document.querySelector('#up').onclick=()=>{if(model&&placed){model.position.y+=.1;status('Moved up.')}};
-document.querySelector('#down').onclick=()=>{if(model&&placed){model.position.y-=.1;status('Moved down.')}};
-document.querySelector('#reset').onclick=()=>{if(model&&placed){if(mode==='float'){const cam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(cam.quaternion);model.position.copy(cam.position).add(dir.multiplyScalar(1.15));model.position.y-=.05;startY=model.position.y;}else model.position.y=startY;status('Position reset.')}};
-if(!navigator.xr)status('Preview loads here. For camera AR, use supported Android Chrome on the HTTPS website.');
+function cleanup(){hitSource?.cancel();hitSource=null;document.body.classList.remove('ar-active');if(renderer){renderer.setAnimationLoop(null);renderer.domElement.remove();renderer.dispose();renderer=null;}session=null;placed=false;setStatus('AR ended. You can try again.');}
+$('launch').onclick=launchAR;$('up').onclick=()=>{if(arModel&&placed){arModel.position.y+=.1;lastY=arModel.position.y;setStatus('Moved higher.','ok')}};$('down').onclick=()=>{if(arModel&&placed){arModel.position.y-=.1;lastY=arModel.position.y;setStatus('Moved lower.','ok')}};$('reset').onclick=()=>{if(arModel&&placed){if(mode==='float'){const xrCam=renderer.xr.getCamera(camera);const dir=new THREE.Vector3(0,0,-1).applyQuaternion(xrCam.quaternion);arModel.position.copy(xrCam.position).add(dir.multiplyScalar(1.15));arModel.position.y-=.05;}else arModel.position.y=lastY;setStatus('Placement reset.','ok')}};
 setupPreview();
 </script>
-</body>
-</html>
+</body></html>
