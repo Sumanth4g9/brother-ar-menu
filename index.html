@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My AR Restaurant Menu</title>
+
+  <script type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js">
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: Arial, sans-serif;
+      background: #fffaf2;
+      color: #29251f;
+    }
+
+    main {
+      max-width: 520px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 6px 24px #00000012;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 320px;
+      background: #f5eddf;
+      border-radius: 14px;
+    }
+
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .note {
+      color: #71695f;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Explore Our Food</h1>
+    <p class="note">Your first interactive restaurant menu.</p>
+
+    <section class="card">
+      <model-viewer
+        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Binary/Avocado.glb"
+        alt="Sample 3D avocado model"
+        ar
+        ar-modes="scene-viewer webxr quick-look"
+        ar-placement="floor"
+        camera-controls
+        auto-rotate
+        shadow-intensity="1">
+      </model-viewer>
+
+      <h2>Featured Dish</h2>
+      <p class="note">
+        Sample model for testing. We will replace it with
+        your brother's actual food item.
+      </p>
+      <p class="price">Add your dish price</p>
+    </section>
+  </main>
+</body>
+</html>
