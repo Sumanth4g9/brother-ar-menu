@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Crave Nation · AR Menu Demo</title>
 <style>
-:root{--lime:#d7ff61;--bg:#090b09;--line:#ffffff30;--glass:rgba(12,14,12,.91)}
+:root{--blue:#014BAA;--cream:#F8F3F0;--ink:#101d33;--muted:#5b6678;--line:#014baa20;--glass:rgba(248,243,240,.96);--lime:#014BAA;--bg:#F8F3F0}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#080a08;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
 button{font:inherit;cursor:pointer}
@@ -55,6 +55,77 @@ button{font:inherit;cursor:pointer}
 .actions { display:flex; }
 .actions .detailsBtn { flex:1; width:100%; }
 .nav button { font-size:22px; line-height:1; }
+
+/* CRAVE NATION — Royal Blue + Light Cream theme */
+:root{
+ --lime:#014BAA;
+ --bg:#F8F3F0;
+ --line:rgba(1,75,170,.24);
+ --glass:rgba(248,243,240,.94);
+ --cn-blue:#014BAA;
+ --cn-cream:#F8F3F0;
+}
+html,body{background:#F8F3F0;color:#014BAA}
+.app{background:#F8F3F0;color:#014BAA}
+.backdrop{background:radial-gradient(ellipse at 50% 35%,#ffffff 0%,#F8F3F0 54%,#dce8f8 100%)}
+.scrim{background:linear-gradient(180deg,rgba(1,75,170,.10),rgba(248,243,240,.02) 25%,rgba(248,243,240,.02) 48%,rgba(248,243,240,.90) 77%,#F8F3F0 100%)}
+.brand,.name,.sheetTitle,.stat b{color:#014BAA}
+.brand span{color:#014BAA}
+.tag,.iconButton,.control,.nav button,.detailsBtn,.close,.qty button{
+ color:#014BAA;background:rgba(248,243,240,.92);border-color:rgba(1,75,170,.24)
+}
+.arLaunch,.primary,.arHelp button,.full{background:#014BAA;color:#fff;border-color:#014BAA}
+.status{color:#014BAA;text-shadow:0 1px 3px #F8F3F0}
+.status small{color:#315d91}
+.xrBadge{color:#F8F3F0;text-shadow:0 2px 8px #014BAA}
+.panel{background:linear-gradient(180deg,rgba(248,243,240,.02),rgba(248,243,240,.91) 12%,rgba(248,243,240,.98) 56%);color:#014BAA;border-top:1px solid rgba(1,75,170,.12)}
+.price,.cartMini{color:#014BAA}
+.desc,.stat small,.helper,.cartRow small,.cartEmpty{color:#536b85}
+.stat{border-color:rgba(1,75,170,.17);background:rgba(1,75,170,.045)}
+.actions .btn{border-color:rgba(1,75,170,.22)}
+.nav button{color:#014BAA}
+.dot{background:#aab8c9}.dot.on{background:#014BAA}
+.overlay{background:rgba(1,24,58,.42)}
+.sheet{background:#F8F3F0;color:#014BAA;border-color:rgba(1,75,170,.20)}
+.sheetHead,.cartRow{border-color:rgba(1,75,170,.15)}
+.close{color:#014BAA}
+.toast{background:#F8F3F0;color:#014BAA;border-color:rgba(1,75,170,.35)}
+.arHelp{background:rgba(248,243,240,.97);color:#014BAA;border-color:rgba(1,75,170,.25)}
+.arHelp p{color:#536b85}
+.corner{border-color:#F8F3F0;filter:drop-shadow(0 2px 4px #014BAA)}
+.foodShadow{background:rgba(1,20,50,.25)}
+/* Camera remains visible in immersive AR; only the information panel uses the theme. */
+#camera{background:transparent}
+@media (prefers-reduced-motion:no-preference){.app{transition:background .2s ease}}
+
+
+/* CRAVE NATION — modern blue/cream redesign */
+html,body{background:#F8F3F0;color:#101d33}
+.app{background:#F8F3F0;color:#101d33;max-width:560px;box-shadow:0 0 0 1px #014baa0b}
+.backdrop{background:radial-gradient(ellipse at 50% 28%,#ffffff 0%,#F8F3F0 58%,#e8eef8 100%)}
+.scrim{background:linear-gradient(180deg,rgba(248,243,240,.96),rgba(248,243,240,.22) 28%,rgba(248,243,240,.04) 48%,rgba(248,243,240,.92) 72%,#F8F3F0 100%)}
+.brand{color:#014BAA;font-size:16px;letter-spacing:2.3px}.brand span{color:#101d33}
+.tag,.iconButton{border:1px solid #014baa25;background:#ffffffc9;color:#014BAA;border-radius:999px}
+.status{color:#014BAA;font-weight:800;letter-spacing:2px}.status small{color:#5b6678;font-size:12px}
+.control{border:1px solid #014baa18;background:#fff;color:#014BAA;border-radius:15px;box-shadow:0 8px 24px #014baa0b}.arLaunch{background:#014BAA;color:#fff;border-color:#014BAA;box-shadow:0 8px 22px #014baa30}
+.arStage{inset:17% 0 31%}.foodStage{width:min(88vw,420px);height:min(47vh,390px)}
+.food{filter:drop-shadow(0 22px 18px rgba(15,38,75,.18))}
+.reticle{border-color:#014BAA}.corner{border-color:#014BAA;filter:drop-shadow(0 2px 3px #ffffff)}
+.placementLabel{color:#014BAA;font-weight:800;letter-spacing:1.5px;text-shadow:none}
+.panel{background:linear-gradient(180deg,rgba(248,243,240,.1),rgba(248,243,240,.94) 12%,#F8F3F0 55%);backdrop-filter:blur(20px);border-top:1px solid #014baa12}
+.name{color:#014BAA;font-size:clamp(28px,7vw,34px);letter-spacing:-1.4px}.price{color:#014BAA}
+.desc{color:#5b6678;font-size:13px}
+.stat{border:1px solid #014baa15;background:#fff;border-radius:16px;box-shadow:0 5px 18px #014baa08}.stat b{color:#101d33}.stat small{color:#687487}
+.btn{border-radius:15px}.detailsBtn{background:#fff;color:#014BAA;border:1px solid #014baa20}.primary,.full{background:#014BAA;color:white;border-color:#014BAA;box-shadow:0 7px 20px #014baa24}
+.nav button{background:#fff;border:1px solid #014baa20;color:#014BAA;border-radius:14px}.dot{background:#c8d0dd}.dot.on{background:#014BAA}.cartMini{color:#014BAA}
+.sheet{background:#F8F3F0;color:#101d33;border:1px solid #014baa18}.sheetTitle{color:#014BAA}.close{background:#fff;color:#014BAA;border-color:#014baa20}.cartRow{border-color:#014baa16}.cartRow small,.helper{color:#687487}.qty button{background:#fff;color:#014BAA;border-color:#014baa20}
+.arHelp{background:#F8F3F0;color:#101d33;border-color:#014baa20;box-shadow:0 18px 60px #12284a25}.arHelp p{color:#5b6678}.arHelp button{background:#014BAA;color:#fff}.xrBadge{color:white;background:#014BAA;border-radius:999px;padding:10px 14px;left:8%;right:8%;top:calc(78px + env(safe-area-inset-top));text-shadow:none;font-weight:700;box-shadow:0 8px 22px #014baa25}
+.toast{background:#014BAA;color:#fff}
+/* In AR the camera is the background; keep only a compact blue/cream overlay. */
+.app.xr-active .top .tag{background:#014BAAdf;color:#fff;border-color:#ffffff55}
+.app.xr-active .panel{background:linear-gradient(180deg,transparent,#F8F3F0f5 18%,#F8F3F0 65%)}
+@media(max-height:760px){.panel{padding-top:13px}.stats{margin:10px 0}.stat{padding:9px}.actions .btn{padding:12px}.arStage{inset:16% 0 34%}}
+
 </style>
 </head>
 <body>
@@ -66,7 +137,7 @@ button{font:inherit;cursor:pointer}
     <div class="brand">CRAVE <span>NATION</span></div>
     <div class="topRight"><span class="tag">AR MENU</span><button class="iconButton" id="cartTop" aria-label="Open cart">Cart <span id="cartCountTop">0</span></button></div>
   </header>
-  <div class="status">YOUR FOOD, BEFORE YOU ORDER<small id="hint">Tap “View in AR” to place the dish on your table</small></div>
+  <div class="status">YOUR FOOD, BEFORE YOU ORDER<small id="hint">Tap “View in AR” to see the dish floating in front of you</small></div>
   <div class="controls">
     <button class="control arLaunch" id="viewArBtn">◈ View in AR</button>
   </div>
@@ -97,8 +168,8 @@ button{font:inherit;cursor:pointer}
       <button id="next" aria-label="Next dish">›</button>
     </div>
   </section>
-  <div class="xrBadge" id="xrBadge">MOVE YOUR PHONE TO FIND A SURFACE · TAP TO PLACE</div>
-  <div class="arHelp" id="arHelp"><h3 id="arHelpTitle">View in AR</h3><p id="arHelpText">For real surface placement, open this menu on a supported Android phone using Chrome over HTTPS. The browser needs ARCore/WebXR support.</p><button id="arHelpClose">Got it</button></div>
+  <div class="xrBadge" id="xrBadge">FLOATING AR · TAP TO POSITION</div>
+  <div class="arHelp" id="arHelp"><h3 id="arHelpTitle">View in AR</h3><p id="arHelpText">Floating AR places the 3D dish in front of the camera automatically. No table scanning is required. Use a compatible Android phone with Chrome and WebXR support.</p><button id="arHelpClose">Got it</button></div>
   <div class="toast" id="toast" role="status"></div>
   <div class="overlay" id="detailsOverlay">
     <div class="sheet">
@@ -220,7 +291,8 @@ function buildDishModel(THREE, product){
  }else{
   for(let i=0;i<5;i++){const piece=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),mat(0xc98942));piece.scale.set(1,.55,.7);piece.position.set((i-2)*.09,.07,Math.sin(i)*.08);root.add(piece)}
  }
- root.scale.setScalar(xrSize/.42);
+ // Keep the dish at a believable real-world size: the plate is about 32 cm wide.
+ root.scale.setScalar(0.55);
  return root;
 }
 async function startRealAR(){
@@ -239,31 +311,36 @@ async function startRealAR(){
   const keyLight=new THREE.DirectionalLight(0xffffff,2.2);keyLight.position.set(-1,3,2);xrScene.add(keyLight);
   xrReticle=makeReticle(THREE);xrReticle.matrixAutoUpdate=false;xrReticle.visible=false;xrScene.add(xrReticle);
   xrFood=buildDishModel(THREE,currentProduct());xrFood.visible=false;xrScene.add(xrFood);
-  xrSession=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:document.getElementById('app')}});
+  // Floating AR needs no plane detection or hit-test: request the camera session directly.
+  xrSession=await navigator.xr.requestSession('immersive-ar',{optionalFeatures:['dom-overlay'],domOverlay:{root:document.getElementById('app')}});
   await xrRenderer.xr.setSession(xrSession);document.querySelector('.app').classList.add('xr-active');
-  placed=false;badge.style.display='block';launch.textContent='AR active'; document.getElementById('hint').textContent='Move your phone, then tap the table to place the dish';
+  placed=false;badge.style.display='block';launch.textContent='AR active'; document.getElementById('hint').textContent='Dish floats in front of you. Tap the view to reposition it.';
   xrRefSpace=await xrSession.requestReferenceSpace('local');
-  const viewer=await xrSession.requestReferenceSpace('viewer');
-  hitSource=await xrSession.requestHitTestSource({space:viewer});
+  function floatDishInFrontOfCamera(){
+   if(!xrFood||!xrRenderer||!xrCamera)return;
+   const viewCam=xrRenderer.xr.getCamera(xrCamera);
+   const forward=new THREE.Vector3(0,0,-1).applyQuaternion(viewCam.quaternion).normalize();
+   xrFood.position.copy(viewCam.position).addScaledVector(forward,0.82);
+   xrFood.position.y-=0.12;
+   // Keep the dish upright and facing the viewer instead of inheriting phone tilt.
+   xrFood.rotation.set(0,Math.atan2(forward.x,forward.z)+Math.PI,0);
+   xrFood.visible=true;placed=true;
+  }
   xrSession.addEventListener('select',()=>{
-   if(xrReticle&&xrReticle.visible&&xrFood){
-    xrFood.position.setFromMatrixPosition(xrReticle.matrix);
-    const surfaceQ=new THREE.Quaternion().setFromRotationMatrix(xrReticle.matrix);
-    const layFlat=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),-Math.PI/2);
-    xrFood.quaternion.copy(surfaceQ).multiply(layFlat);xrFood.visible=true;placed=true;
-   }
+   // A screen tap moves the floating dish to a comfortable distance in front of the camera.
+   floatDishInFrontOfCamera();
+   document.getElementById('hint').textContent='Floating dish repositioned. Tap again to move it.';
   });
   xrSession.addEventListener('end',()=>{
-   badge.style.display='none';launch.textContent='◈ View in AR';document.getElementById('hint').textContent='Tap “View in AR” to place the dish on your table';xrSession=null;hitSource=null;
+   badge.style.display='none';launch.textContent='◈ View in AR';document.getElementById('hint').textContent='Tap “View in AR” to see the dish floating in front of you';xrSession=null;hitSource=null;
    document.querySelector('.app').classList.remove('xr-active');
    if(xrRenderer){xrRenderer.setAnimationLoop(null);xrRenderer.dispose();xrRenderer.domElement.remove();xrRenderer=null}
    xrScene=null;xrFood=null;xrReticle=null;
   });
   xrRenderer.setAnimationLoop((time,frame)=>{
-   if(frame&&hitSource&&xrRefSpace){const hits=frame.getHitTestResults(hitSource);
-    if(hits.length){const pose=hits[0].getPose(xrRefSpace);xrReticle.visible=!placed;if(!placed&&pose)xrReticle.matrix.fromArray(pose.transform.matrix)}
-    else if(!placed)xrReticle.visible=false;
-   }
+   // Auto-show the dish as soon as the first XR camera pose is available.
+   if(frame&&!placed)floatDishInFrontOfCamera();
+   if(xrReticle)xrReticle.visible=false;
    xrRenderer.render(xrScene,xrCamera);
   });
   xrRenderer.domElement.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:1000;pointer-events:none';
