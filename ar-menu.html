@@ -247,52 +247,24 @@ function makeReticle(THREE){
 }
 function buildDishModel(THREE, product){
  const root=new THREE.Group();
- const mat=(color,roughness=.72,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
- const plateMat=mat(0xf2f0e8,.3);
- const plate=new THREE.Mesh(new THREE.CylinderGeometry(.29,.27,.025,64),plateMat);
- plate.position.y=.012;root.add(plate);
- const rim=new THREE.Mesh(new THREE.TorusGeometry(.265,.008,8,64),mat(0xffffff,.25));
- rim.rotation.x=Math.PI/2;rim.position.y=.027;root.add(rim);
- const name=(product.name||'').toLowerCase();
- if(name.includes('fries')){
-  const gold=[0xf4bd58,0xe9a33d,0xffd06c,0xd98b2b,0xf0b14c];
-  for(let i=0;i<34;i++){
-   const len=.13+Math.random()*.12, radius=.012+Math.random()*.004;
-   const fry=new THREE.Mesh(new THREE.CylinderGeometry(radius*.82,radius,len,8),mat(gold[i%gold.length]));
-   const a=Math.random()*Math.PI*2, r=Math.random()*.18;
-   fry.position.set(Math.cos(a)*r,.055+Math.random()*.095,Math.sin(a)*r);
-   fry.rotation.set((Math.random()-.5)*.45,(Math.random()-.5)*1.5,Math.PI/2+(Math.random()-.5)*.65);
-   root.add(fry);
-  }
- }else if(name.includes('spring')){
-  for(let i=0;i<4;i++){
-   const roll=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.25,16),mat(i%2?0xd99a43:0xe9b65e));
-   roll.rotation.z=Math.PI/2+(i%2?-.18:.18);roll.rotation.y=(i-1.5)*.17;
-   roll.position.set((i-1.5)*.105,.065,((i%2)-.5)*.075);root.add(roll);
-   const endMat=mat(0xf5d28b);
-   for(const x of [-.126,.126]){const end=new THREE.Mesh(new THREE.CircleGeometry(.031,16),endMat);end.rotation.y=Math.PI/2;end.position.set(roll.position.x+x,.065,roll.position.z);root.add(end)}
-  }
- }else if(name.includes('chicken')||name.includes('wing')){
-  for(let i=0;i<6;i++){
-   const wing=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),mat([0x9c4d20,0xc16b2d,0x7c351a][i%3]));
-   wing.scale.set(.105,.055,.065);wing.rotation.z=(i-2.5)*.15;
-   wing.position.set(Math.cos(i*2.4)*.12,.075+(i%3)*.025,Math.sin(i*2.4)*.105);root.add(wing);
-   const bone=new THREE.Mesh(new THREE.CylinderGeometry(.009,.012,.075,8),mat(0xf0dfb8));
-   bone.rotation.z=Math.PI/2;bone.position.set(wing.position.x+.08,.085,wing.position.z);root.add(bone);
-  }
- }else if(name.includes('mojito')||name.includes('lime')||name.includes('drink')){
-  root.remove(plate);root.remove(rim);
-  const glassMat=new THREE.MeshPhysicalMaterial({color:0xcde9df,transparent:true,opacity:.28,roughness:.08,metalness:0});
-  const glass=new THREE.Mesh(new THREE.CylinderGeometry(.105,.075,.31,32,1,true),glassMat);glass.position.y=.17;root.add(glass);
-  const drink=new THREE.Mesh(new THREE.CylinderGeometry(.098,.07,.25,32),mat(0x83c85b,.22));drink.position.y=.15;root.add(drink);
-  for(let i=0;i<5;i++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),mat(0x238347));leaf.scale.set(1,.25,.55);leaf.position.set((Math.random()-.5)*.1,.2+Math.random()*.08,(Math.random()-.5)*.1);root.add(leaf)}
-  const lime=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.012,24),mat(0x8ecb48));lime.rotation.x=Math.PI/2;lime.position.set(.03,.32,.015);root.add(lime);
-  const straw=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.25,8),mat(0xffffff));straw.position.set(.045,.33,0);straw.rotation.z=-.16;root.add(straw);
- }else{
-  for(let i=0;i<5;i++){const piece=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),mat(0xc98942));piece.scale.set(1,.55,.7);piece.position.set((i-2)*.09,.07,Math.sin(i)*.08);root.add(piece)}
- }
- // Keep the dish at a believable real-world size: the plate is about 32 cm wide.
- root.scale.setScalar(0.55);
+ // Use the exact transparent food image already shown in the menu, so AR cannot
+ // accidentally show a generic/generated dish for the selected product.
+ const texture=new THREE.TextureLoader().load(product.image,()=>{
+  texture.colorSpace=THREE.SRGBColorSpace;
+  const image=texture.image;
+  const aspect=(image&&image.width&&image.height)?image.width/image.height:1;
+  const height=0.42;
+  const width=Math.max(0.18,Math.min(0.58,height*aspect));
+  const plane=root.userData.foodPlane;
+  if(plane) plane.geometry.dispose();
+  if(plane) plane.geometry=new THREE.PlaneGeometry(width,height);
+ });
+ texture.colorSpace=THREE.SRGBColorSpace;
+ const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:0.02,side:THREE.DoubleSide,depthWrite:false});
+ const plane=new THREE.Mesh(new THREE.PlaneGeometry(.42,.42),material);
+ plane.position.set(0,0,0);
+ root.add(plane);
+ root.userData.foodPlane=plane;
  return root;
 }
 async function startRealAR(){
@@ -320,9 +292,11 @@ async function startRealAR(){
    if(!xrFood||!xrRenderer||!xrCamera)return;
    const viewCam=xrRenderer.xr.getCamera(xrCamera);
    const forward=new THREE.Vector3(0,0,-1).applyQuaternion(viewCam.quaternion).normalize();
-   xrFood.position.copy(viewCam.position).addScaledVector(forward,0.82);
-   xrFood.position.y-=0.12;
-   // Keep the dish upright and facing the viewer instead of inheriting phone tilt.
+   // Set position once in XR's local reference space. Do not recalculate every frame:
+   // that prevents the food from drifting/jumping as the phone moves.
+   xrFood.position.copy(viewCam.position).addScaledVector(forward,0.85);
+   xrFood.position.y-=0.08;
+   // Keep the image upright and facing the user, ignoring camera pitch/roll.
    xrFood.rotation.set(0,Math.atan2(forward.x,forward.z)+Math.PI,0);
    xrFood.visible=true;placed=true;
   }
@@ -357,8 +331,14 @@ async function startRealAR(){
 }
 window.addEventListener('crave-product-change',async()=>{
  if(!xrScene||!xrFood)return;
- try{const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js');
-  xrScene.remove(xrFood);xrFood=buildDishModel(THREE,currentProduct());xrFood.visible=false;xrScene.add(xrFood);placed=false;
+ try{
+  const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js');
+  const savedPosition=xrFood.position.clone(), savedRotation=xrFood.rotation.clone();
+  xrScene.remove(xrFood);
+  xrFood.traverse(obj=>{if(obj.material){if(obj.material.map)obj.material.map.dispose();obj.material.dispose()}if(obj.geometry)obj.geometry.dispose()});
+  xrFood=buildDishModel(THREE,currentProduct());
+  xrFood.position.copy(savedPosition);xrFood.rotation.copy(savedRotation);
+  xrFood.visible=true;placed=true;xrScene.add(xrFood);
  }catch(e){console.error('Could not update AR dish',e)}
 });
 launch.addEventListener('click',startRealAR);
